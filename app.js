@@ -4,12 +4,9 @@ require('dotenv').config()
 
 // Sets up MongoDB
 const mongoURL = process.env.MONGO_URL
-
-main().catch(err => console.log(err));
-
-async function main() {
-  await mongoose.connect(mongoURL);
-}
+mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // Sets up Express
 const app = express();
