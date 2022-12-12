@@ -25,7 +25,10 @@ app.use(express.json());
 
 // Sets up routes
 const indexRouter = require('./routes/index')
+const signUpRouter = require('./routes/sign_up')
+
 app.use("/", indexRouter)
+app.use("/sign-up", signUpRouter)
 
 
 app.listen(PORT, () => {
