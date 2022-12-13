@@ -13,6 +13,7 @@ const Message = require("./models/message");
 
 // Sets up MongoDB
 const mongoURL = process.env.MONGO_URL;
+mongoose.set("strictQuery", true);
 mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -29,6 +30,24 @@ app.set("views", path.join(__dirname, "./views"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
+
+// Sets up routes
+const indexRouter = require("./routes/index");
+const signUpRouter = require("./routes/sign_up");
+// const loginRouter = require("./routes/login")
+
+app.use("/", indexRouter);
+app.use("/sign-up", signUpRouter);
+
+
+// Sets up passport middleware
+app.use(
+    session({
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
 
 // Passport functions
 passport.use(
@@ -48,25 +67,28 @@ passport.use(
     })
 );
 
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
 
-// Sets up passport middleware
-app.use(
-    session({
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: true,
-    })
-);
+passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
+        done(err, user);
+    });
+});
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Sets up routes
-const indexRouter = require("./routes/index");
-const signUpRouter = require("./routes/sign_up");
-
-app.use("/", indexRouter);
-app.use("/sign-up", signUpRouter);
+app.get("/login", (req, res) => res.render("login"));
+app.post("/login", (req, res) => {
+    passport.authenticate("local", {
+        successRedirect: "/",
+        failureRedirect: "/",
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}.`);
 });
+

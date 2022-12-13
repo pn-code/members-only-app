@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 
-const postSignUpController = (req, res, next) => {
+const postSignUpController = async (req, res, next) => {
     // Sanitize form inputs
     body("first_name", "First Name should not be empty.")
         .trim()
@@ -34,24 +34,32 @@ const postSignUpController = (req, res, next) => {
         return console.log(errors);
     }
 
-    if (req.body.password === req.body.confirm_password) {
-        const user = new User({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            username: req.body.username,
-            password: req.body.password,
-            membership: false,
-        });
-        user.save((err) => {
-            if (err) {
-                return next(err);
-            }
-        });
-        res.redirect("/");
+    const query = await User.findOne({ username: req.body.username })
+    if (!query) {
+        if (req.body.password === req.body.confirm_password) {
+            const user = new User({
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+                username: req.body.username,
+                password: req.body.password,
+                membership: false,
+            });
+            user.save((err) => {
+                if (err) {
+                    return next(err);
+                }
+            });
+            res.redirect("/");
+        } else {
+            res.status(403).send("Passwords do not match...");
+            next(err);
+        }
     } else {
-        res.status(403).send("Passwords do not match...");
-        next(err);
+        // If username is already taken,
+        res.status(403).send(`The username "${req.body.username}" has already been taken...`)
     }
+
+
 };
 
 module.exports = postSignUpController;
