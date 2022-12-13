@@ -18,11 +18,15 @@
   },
   "homepage": "https://github.com/pn-code/members-only-app#readme",
   "dependencies": {
+    "body-parser": "^1.20.1",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "express-validator": "^6.14.2",
-    "mongoose": "^6.8.0"
+    "mongoose": "^6.8.0",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
