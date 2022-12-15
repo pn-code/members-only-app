@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-<body>
-    <h1>Welcome to my Cool App.</h1>
-    <p>This is a members only area...</p>
-    <a href="/login">Log in.</a>
-    <a href="/sign-up">If you do not have an account, sign up to proceed.</a>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Index</title>
+    </head>
+    <body>
+        <h1>Members Only Club</h1>
+        <% if (user) {%>
+        <h1>WELCOME BACK <%= user.username %></h1>
+        <a href="/log-out">LOG OUT</a>
+        <% } else { %>
+        <a href="/login">login</a>
+        <a href="/sign-up">signup</a>
+        <%}%>
+    </body>
 </html>

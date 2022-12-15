@@ -5,7 +5,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const initializePassport = require("./passport-config");
 
 // Require user/message models
 const User = require("./models/user");
@@ -27,9 +27,27 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "./views"));
 
 // Sets up express middleware
-app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: false }));
+app.use(
+    session({
+        secret: process.env.SECRET,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
+
+// Initialize Passport Config
+initializePassport(passport);
+
+// Sets up passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(function (req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
+});
 
 // Sets up routes
 const indexRouter = require("./routes/index");
@@ -39,56 +57,23 @@ const signUpRouter = require("./routes/sign_up");
 app.use("/", indexRouter);
 app.use("/sign-up", signUpRouter);
 
-
-// Sets up passport middleware
-app.use(
-    session({
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: true,
-    })
-);
-
-// Passport functions
-passport.use(
-    new LocalStrategy((username, password, done) => {
-        User.findOne({ username: username }, (err, user) => {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                return done(null, false, { message: "Incorrect username" });
-            }
-            if (user.password !== password) {
-                return done(null, false, { message: "Incorrect password" });
-            }
-            return done(null, user);
-        });
-    })
-);
-
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-    User.findById(id, function (err, user) {
-        done(err, user);
-    });
-});
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.get("/login", (req, res) => res.render("login"));
-app.post("/login", (req, res) => {
+app.post(
+    "/login",
     passport.authenticate("local", {
         successRedirect: "/",
         failureRedirect: "/",
+    })
+);
+app.get("/log-out", (req, res, next) => {
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/");
     });
 });
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}.`);
 });
-
