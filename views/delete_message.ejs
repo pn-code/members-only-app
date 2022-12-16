@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Message</title>
+</head>
+<body>
+    <h1>Are you sure you want to delete the message with the ID, <%= _id %>?</h1>
+    <form action="/messages/<%= _id %>" method="POST">
+        <button type="submit">Delete Message</button>
+        <a href="/messages">Go back to Messages</a>
+    </form>
+</body>
+</html>

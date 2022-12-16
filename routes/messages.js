@@ -3,13 +3,16 @@ const router = express.Router();
 const Message = require("../models/message");
 
 router.get("/", (req, res) => {
-    console.log(req.user)
     if (!req.user) {
         res.redirect("/login");
     } else {
         Message.find((err, messages) => {
             if (err) return res.send("There was an error.");
-            res.render("message_list", { member: req.user.membership, messages: messages });
+            res.render("message_list", {
+                member: req.user.membership,
+                messages: messages,
+                admin: req.user.admin
+            });
         });
     }
 });
@@ -28,6 +31,21 @@ router.post("/", (req, res, next) => {
             if (err) return next(err);
         });
         res.redirect("/messages");
+    }
+});
+
+router.get("/:_id", (req, res) => {
+    res.render("delete_message", { _id: req.params._id });
+});
+
+router.post("/:_id", (req, res, next) => {
+    if (req.user.admin) {
+        Message.findOneAndRemove({ _id: req.params._id }, (err, message) => {
+            if (err) return next(err);
+            res.redirect("/messages");
+        });
+    } else {
+        return res.send("You do not have the authorization to complete this action.")
     }
 });
 

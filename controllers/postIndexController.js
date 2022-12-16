@@ -13,8 +13,6 @@ const postIndexController = async (req, res, next) => {
             admin: false,
         });
 
-        console.log(user);
-
         User.findByIdAndUpdate(req.user._id, user, {}, (err, updatedUser) => {
             // If an error occurs...
             if (err) return next(err);

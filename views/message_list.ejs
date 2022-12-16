@@ -40,6 +40,9 @@
                     <p><%= messages[i].timestamp %></p>
                     <p>written by: <%= messages[i].author_name %></p>
                     <% } %>
+                    <% if (admin) { %> 
+                    <a href="/messages/<%= messages[i]._id %>">Delete Message</a>
+                    <% } %>
                 </div>
             <% } %>
         </ul>
