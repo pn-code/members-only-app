@@ -37,7 +37,7 @@
                     <h4><%= messages[i].title %></h4>
                     <p><%= messages[i].text %></p>
                     <% if (member) { %>
-                    <p><%= messages[i].timestamp %></p>
+                    <p><%= messages[i].formatted_date %></p>
                     <p>written by: <%= messages[i].author_name %></p>
                     <% } %>
                     <% if (admin) { %> 
