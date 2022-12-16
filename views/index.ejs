@@ -10,7 +10,18 @@
         <h1>Members Only Club</h1>
         <% if (user) {%>
         <h1>WELCOME BACK <%= user.username %></h1>
+        <a href="/messages">Go to messages</a>
         <a href="/log-out">LOG OUT</a>
+        <% if (!user.membership) { %>
+        <div>
+            <h4>Enter our secret password to gain membership</h4>
+            <form action="/" method="POST">
+                <label for="secret">Secret Code: </label>
+                <input id="secret" name="secret" type="text" placeholder="secret">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <% } %>
         <% } else { %>
         <a href="/login">login</a>
         <a href="/sign-up">signup</a>

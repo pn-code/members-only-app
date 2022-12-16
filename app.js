@@ -53,9 +53,11 @@ app.use(function (req, res, next) {
 const indexRouter = require("./routes/index");
 const signUpRouter = require("./routes/sign_up");
 // const loginRouter = require("./routes/login")
+const messagesRouter = require("./routes/messages")
 
 app.use("/", indexRouter);
 app.use("/sign-up", signUpRouter);
+app.use("/messages", messagesRouter);
 
 app.get("/login", (req, res) => res.render("login"));
 app.post(

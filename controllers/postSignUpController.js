@@ -46,6 +46,7 @@ const postSignUpController = async (req, res, next) => {
                     username: req.body.username,
                     password: hashedPassword,
                     membership: false,
+                    admin: false
                 }).save((err) => {
                     if (err) {
                         return next(err);

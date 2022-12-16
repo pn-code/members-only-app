@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Message List</title>
+    </head>
+    <body>
+        <h1>Message Board</h1>
+        <a href="/">Return Home</a>
+        <form action="/messages" method="POST">
+            <legend>Write a new message</legend>
+            <label for="new_message_title">Title: </label>
+            <input
+                type="text"
+                id="new_message_title"
+                name="new_message_title"
+                placeholder="New Message Title"
+                required
+            />
+            <label for="new_message_body">Message: </label>
+            <textarea
+                type="text"
+                id="new_message_body"
+                name="new_message_body"
+                placeholder="Write new message..."
+                cols="30" 
+                rows="5"
+                required
+            ></textarea>
+            <button type="submit">Submit</button>
+        </form>
+        <ul class="messages--container">
+            <% for (let i=0; i<messages.length; i++) { %>
+                <div class="message">
+                    <h4><%= messages[i].title %></h4>
+                    <p><%= messages[i].text %></p>
+                    <% if (member) { %>
+                    <p><%= messages[i].timestamp %></p>
+                    <p>written by: <%= messages[i].author_name %></p>
+                    <% } %>
+                </div>
+            <% } %>
+        </ul>
+    </body>
+</html>
